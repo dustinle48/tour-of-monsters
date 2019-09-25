@@ -1,0 +1,10 @@
+<h2>My Monsters</h2>
+<ul class="monsters">
+  <li *ngFor="let monster of monsters"
+      [class.selected]="monster === selectedMonster"
+      (click)="onSelect(monster)">
+    <span class="badge">{{ monster.id }}</span> {{ monster.name }}
+  </li>
+</ul>
+
+<app-monster-detail [monster]="selectedMonster"></app-monster-detail>
