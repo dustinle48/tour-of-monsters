@@ -1,10 +1,20 @@
 <h2>My Monsters</h2>
+
+<div>
+    <label>Monster name:
+      <input #monsterName />
+    </label>
+    <button (click)="add(monsterName.value); monsterName.value=''">
+        add
+    </button>
+</div>
+
 <ul class="monsters">
-  <li *ngFor="let monster of monsters"
-      [class.selected]="monster === selectedMonster"
-      (click)="onSelect(monster)">
-    <span class="badge">{{ monster.id }}</span> {{ monster.name }}
+  <li *ngFor="let monster of monsters">
+      <a routerLink="/detail/{{monster.id}}">
+        <span class="badge">{{ monster.id }}</span> {{ monster.name }}
+      </a>   
+      <button class="delete" title="delete monster"
+      (click)="delete(monster)">x</button>
   </li>
 </ul>
-
-<app-monster-detail [monster]="selectedMonster"></app-monster-detail>

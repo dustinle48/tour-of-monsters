@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
 import { Monster } from '../monster';
-import { MONSTERS} from '../monsters-list';
+import { MonsterService } from '../monster.service';
 
 @Component({
   selector: 'app-monsters',
@@ -8,16 +9,31 @@ import { MONSTERS} from '../monsters-list';
   styleUrls: ['./monsters.component.css']
 })
 export class MonstersComponent implements OnInit {
-  monsters = MONSTERS;
-  selectedMonster: Monster;
+  monsters: Monster[];
 
-  constructor() { }
+  constructor(private monsterService: MonsterService) { }
 
   ngOnInit() {
+    this.getMonsters();
   }
 
-  onSelect(monster: Monster): void {
-    this.selectedMonster = monster;
+  getMonsters(): void {
+    this.monsterService.getMonsters()
+    .subscribe(monsters => this.monsters = monsters);
+  }
+
+  add(name: string): void {
+    name = name.trim();
+    if (!name) { return; }
+    this.monsterService.addMonster({ name } as Monster)
+      .subscribe(monster => {
+        this.monsters.push(monster);
+      });
+  }
+
+  delete(monster: Monster): void {
+    this.monsters = this.monsters.filter(h => h !== monster);
+    this.monsterService.deleteMonster(monster).subscribe();
   }
 
 }

@@ -1,25 +1,40 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
-import { MonsterDetailComponent } from './monster-detail.component';
+import { Monster }         from '../monster';
+import { MonsterService }  from '../monster.service';
 
-describe('MonsterDetailComponent', () => {
-  let component: MonsterDetailComponent;
-  let fixture: ComponentFixture<MonsterDetailComponent>;
+@Component({
+  selector: 'app-monster-detail',
+  templateUrl: './monster-detail.component.html',
+  styleUrls: [ './monster-detail.component.css' ]
+})
+export class MonsterDetailComponent implements OnInit {
+  @Input() monster: Monster;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MonsterDetailComponent ]
-    })
-    .compileComponents();
-  }));
+  constructor(
+    private route: ActivatedRoute,
+    private monsterService: MonsterService,
+    private location: Location
+  ) {}
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MonsterDetailComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  ngOnInit(): void {
+    this.getMonster();
+  }
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  getMonster(): void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.monsterService.getMonster(id)
+      .subscribe(monster => this.monster = monster);
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
+
+ save(): void {
+    this.monsterService.updateMonster(this.monster)
+      .subscribe(() => this.goBack());
+  }
+}
